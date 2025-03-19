@@ -1,38 +1,42 @@
 # **Recipe REST API using Django & Django REST Framework (DRF)**  
 
 ## 🌟 **Overview**  
-This project is a **Django-based REST API** for managing recipes, ingredients, and tags. It allows users to:  
-✅ **Create, update, and delete recipes**  
-✅ **Manage ingredients and tags**  
-✅ **Retrieve recipes using filters**  
-✅ **Perform CRUD operations via REST APIs**  
+This project is a **Django-based REST API** for managing recipes, ingredients, and tags. It is built using **Django REST Framework (DRF)** and includes authentication, Docker support, and environment configuration.  
+
+📌 **API Documentation is available at** `/api/docs/` using **Swagger UI**.  
+
+Users must **authenticate with a token** to perform CRUD operations on **recipes, ingredients, and tags**.  
 
 ---
 
 ## 🎯 **Features**  
 
-### 🔹 **1. Recipe Management**  
-- **Create new recipes** with name, description, ingredients, tags, and cooking instructions.  
-- **Retrieve recipes** via API with filtering options.  
-- **Update recipe details** such as ingredients and instructions.  
-- **Delete recipes** when no longer needed.  
+### 🔹 **1. API Documentation (Swagger UI)**  
+- View and test API endpoints at **`/api/docs/`**.  
+- Supports authentication for testing secured routes.  
 
-### 🔹 **2. Ingredient Management**  
-- **Add and list ingredients** used in recipes.  
-- **Update ingredient details** (e.g., quantity, type).  
-- **Delete unused ingredients** from the database.  
+### 🔹 **2. User Authentication**  
+- Users must **log in and obtain an authentication token** to access the API.  
+- Admin users can log in via **Django Admin Panel**.  
 
-### 🔹 **3. Tag Management**  
-- **Create, list, and delete tags** to categorize recipes.  
-- Tags help users filter recipes based on cuisine, meal type, or dietary restrictions.  
+### 🔹 **3. Recipe Management**  
+- **Create, update, delete, and retrieve recipes**.  
+- Each recipe contains **name, ingredients, tags, and instructions**.  
 
-### 🔹 **4. REST API Endpoints**  
-The API follows **RESTful principles** and provides the following endpoints:  
+### 🔹 **4. Ingredient Management**  
+- **Add, update, and delete ingredients** used in recipes.  
+
+### 🔹 **5. Tag Management**  
+- **Create, update, and delete tags** for categorizing recipes.  
+
+### 🔹 **6. REST API Endpoints**  
 
 | **Method** | **Endpoint** | **Description** |
 |------------|------------|----------------|
+| `POST` | `/api/user/token/` | Obtain auth token |
+| `POST` | `/api/user/create/` | Create a new user |
 | `GET` | `/api/recipes/` | Get all recipes |
-| `POST` | `/api/recipes/` | Create a new recipe |
+| `POST` | `/api/recipes/` | Create a new recipe (Auth required) |
 | `GET` | `/api/recipes/{id}/` | Get a specific recipe |
 | `PUT/PATCH` | `/api/recipes/{id}/` | Update a recipe |
 | `DELETE` | `/api/recipes/{id}/` | Delete a recipe |
@@ -42,54 +46,67 @@ The API follows **RESTful principles** and provides the following endpoints:
 | `GET` | `/api/tags/` | Get all tags |
 | `POST` | `/api/tags/` | Create a new tag |
 | `DELETE` | `/api/tags/{id}/` | Delete a tag |
+| `GET` | `/api/docs/` | Access API Documentation (Swagger UI) |
 
-### 🔹 **5. Authentication & Security**  
-- API access is **secured with authentication** (Token or JWT-based).  
-- Users need to **log in** to create or modify recipes.  
-
----
-
-## 🚀 **Tech Stack**  
-
-- **Backend**: Django, Django REST Framework (DRF)  
-- **Database**: PostgreSQL   
-- **Authentication**: Django authentication system  
-- **Deployment**: Docker Hub
+### 🔹 **7. Django Admin Panel**  
+- **Login via Django Admin** (`/admin/`) to manage users, recipes, and ingredients.  
 
 ---
 
 ## 🛠 **Setup Instructions**  
 
-1️⃣ **Clone the Repository**  
+### ✅ **1. Clone the Repository**  
 ```bash
 git clone https://github.com/Koushik7893/Recipe-App-Django-Restapi.git
-cd recipe-api
+cd Recipe-App-Django-Restapi
 ```
 
-2️⃣ **Create a Virtual Environment & Install Dependencies**  
+### ✅ **2. Create `.env` File**  
+- Copy `.env.sample` and rename it to `.env`.  
+- Modify it based on your local setup.  
+
+### ✅ **3. Run with Docker (Development Mode)**  
+
+1️⃣ **Run Migrations**  
 ```bash
-python -m venv venv
-source venv/bin/activate  # (Windows: venv\Scripts\activate)
-pip install -r requirements.txt
+docker compose run --rm app sh -c "python manage.py makemigrations"
+docker compose run --rm app sh -c "python manage.py wait_for_db && python manage.py migrate"
 ```
 
-3️⃣ **Apply Migrations & Run Server**  
+2️⃣ **Create a Superuser**  
 ```bash
-python manage.py migrate
-python manage.py runserver
+docker compose run --rm app sh -c "python manage.py createsuperuser"
 ```
 
-4️⃣ **Test API using Postman or cURL**  
+3️⃣ **Start the Application**  
 ```bash
-curl -X GET http://127.0.0.1:8000/api/recipes/
+docker-compose up
+```
+
+4️⃣ **Stop the Application**  
+```bash
+docker-compose down
+```
+
+---
+
+## 🚀 **Deployment Instructions (AWS/Production)**  
+
+1️⃣ **Stop Existing Containers**  
+```bash
+docker compose -f docker-compose-deploy.yml down
+```
+
+2️⃣ **Start Application in Production Mode**  
+```bash
+docker compose -f docker-compose-deploy.yml up
 ```
 
 ---
 
 ## 📌 **Future Enhancements**  
-✔ **User authentication with JWT**  
-✔ **Recipe image upload feature**  
-✔ **Recipe rating & reviews system**  
+✔ **Recipe image upload**  
+✔ **Recipe ratings & reviews**  
 ✔ **Advanced filtering & search**  
 
-This **Django REST API** efficiently manages **recipes, ingredients, and tags**, making it a scalable solution for food-based applications. 🚀
+This **Django REST API** provides a **secure and scalable** way to manage **recipes, ingredients, and tags** with authentication and API documentation via **Swagger UI**. 🚀
